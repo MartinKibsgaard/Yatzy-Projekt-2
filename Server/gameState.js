@@ -1,4 +1,18 @@
-const logic = require('./logic');
+// server/gameState.mjs
+
+import {
+  rollDice,
+  sameValuePoints,
+  onePairPoints,
+  twoPairPoints,
+  threeSamePoints,
+  fourSamePoints,
+  fullHousePoints,
+  smallStraightPoints,
+  largeStraightPoints,
+  chancePoints,
+  yatzyPoints
+} from './yatzy.mjs';
 
 // In-memory state
 const state = {
@@ -6,7 +20,7 @@ const state = {
   started: false,
 };
 
-function addPlayer(name, sessionId) {
+export function addPlayer(name, sessionId) {
   if (state.started) return;
   if (!state.players.find(p => p.id === sessionId)) {
     state.players.push({
@@ -20,7 +34,7 @@ function addPlayer(name, sessionId) {
   }
 }
 
-function getPlayers() {
+export function getPlayers() {
   return state.players.map(p => ({
     id: p.id,
     name: p.name,
@@ -29,7 +43,7 @@ function getPlayers() {
   }));
 }
 
-function startGame() {
+export function startGame() {
   state.started = true;
   return { started: true };
 }
@@ -38,41 +52,41 @@ function findPlayer(id) {
   return state.players.find(p => p.id === id);
 }
 
-function rollDiceForPlayer(id) {
+export function rollDiceForPlayer(id) {
   const p = findPlayer(id);
   if (!p) return { error: 'Player not found' };
   if (p.throwCount >= 3) return { error: 'No rolls left' };
-  p.dice = logic.rollDice(p.dice, p.held);
+  p.dice = rollDice(p.dice, p.held);
   p.throwCount++;
   return { dice: p.dice, throwCount: p.throwCount };
 }
 
-function holdDiceForPlayer(id, idx, hold) {
+export function holdDiceForPlayer(id, idx, hold) {
   const p = findPlayer(id);
   if (!p) return { error: 'Player not found' };
   p.held[idx] = hold;
   return { held: p.held };
 }
 
-function scoreForPlayer(id, section, idx) {
+export function scoreForPlayer(id, section, idx) {
   const p = findPlayer(id);
   if (!p) return { error: 'Player not found' };
   const vals = p.dice;
   let score = 0;
   if (section === 'upper') {
-    score = logic.sameValuePoints(idx + 1, vals);
+    score = sameValuePoints(idx + 1, vals);
     p.scores.upper[idx] = score;
   } else {
     switch (idx) {
-      case 0: score = logic.onePairPoints(vals); break;
-      case 1: score = logic.twoPairPoints(vals); break;
-      case 2: score = logic.threeSamePoints(vals); break;
-      case 3: score = logic.fourSamePoints(vals); break;
-      case 4: score = logic.fullHousePoints(vals); break;
-      case 5: score = logic.smallStraightPoints(vals); break;
-      case 6: score = logic.largeStraightPoints(vals); break;
-      case 7: score = logic.chancePoints(vals); break;
-      case 8: score = logic.yatzyPoints(vals); break;
+      case 0: score = onePairPoints(vals); break;
+      case 1: score = twoPairPoints(vals); break;
+      case 2: score = threeSamePoints(vals); break;
+      case 3: score = fourSamePoints(vals); break;
+      case 4: score = fullHousePoints(vals); break;
+      case 5: score = smallStraightPoints(vals); break;
+      case 6: score = largeStraightPoints(vals); break;
+      case 7: score = chancePoints(vals); break;
+      case 8: score = yatzyPoints(vals); break;
       default: break;
     }
     p.scores.lower[idx] = score;
@@ -90,8 +104,8 @@ function calculateTotal(player) {
   return u + l;
 }
 
-// Enhanced state for client
-function getGameState(requestingId) {
+// Giver fuld gameState for klienten
+export function getGameState(requestingId) {
   const players = state.players.map(p => ({
     id: p.id,
     name: p.name,
@@ -110,8 +124,8 @@ function getGameState(requestingId) {
     bonus = sum >= 63 ? 50 : 0;
     total = calculateTotal(me);
   } else {
-    dice = [0,0,0,0,0];
-    held = [false,false,false,false,false];
+    dice = [0, 0, 0, 0, 0];
+    held = [false, false, false, false, false];
     throwCount = 0;
     scores = { upper: Array(6).fill(null), lower: Array(9).fill(null) };
     sum = 0;
@@ -132,13 +146,3 @@ function getGameState(requestingId) {
     total
   };
 }
-
-module.exports = {
-  addPlayer,
-  getPlayers,
-  startGame,
-  rollDiceForPlayer,
-  holdDiceForPlayer,
-  scoreForPlayer,
-  getGameState
-};

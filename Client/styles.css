@@ -401,25 +401,3 @@
     text-align: right;
     margin-top: 10px;
   }
-
-  .scoreboard {
-    margin: 20px auto;
-    padding: 10px;
-    background: rgba(0,0,0,0.4);
-    border-radius: 8px;
-    color: #fff;
-    max-width: 300px;
-  }
-  .scoreboard h2 {
-    margin-top: 0;
-    font-family: "Orbitron", sans-serif;
-    font-size: 1.5rem;
-  }
-  .scoreboard ul {
-    list-style: none;
-    padding-left: 0;
-  }
-  .scoreboard li {
-    margin: 5px 0;
-  }
-  
