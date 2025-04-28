@@ -1,11 +1,24 @@
-const express = require('express');
-const session = require('express-session');
-const bodyParser = require('body-parser');
-const path = require('path');
-const { addPlayer, getPlayers, startGame, rollDiceForPlayer, holdDiceForPlayer, scoreForPlayer, getGameState } = require('./gameState');
+import express from 'express';
+import session from 'express-session';
+import bodyParser from 'body-parser';
+import path from 'path';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+import { 
+  addPlayer, 
+  getPlayers, 
+  startGame, 
+  rollDiceForPlayer, 
+  holdDiceForPlayer, 
+  scoreForPlayer, 
+  getGameState 
+} from './gameState.js';
 
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 // Middleware
 app.use(bodyParser.json());
