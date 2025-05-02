@@ -5,7 +5,7 @@ export function rollDice(dice, held) {
   }
   return newDice;
 }
-
+ 
 // Frequency helper
 function frequency(arr) {
   const freq = Array(7).fill(0);

@@ -1,14 +1,15 @@
-// Join the game
+// Join game
 async function joinGame(name) {
   const response = await fetch('/api/join', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ name }),
   });
+
   if (!response.ok) {
     throw new Error('Failed to join the game');
   }
-  return response.json();
+  return true;
 }
 
 // Get the list of players

@@ -7,18 +7,18 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-import { 
-  addPlayer, 
-  getPlayers, 
-  startGame, 
-  rollDiceForPlayer, 
-  holdDiceForPlayer, 
-  scoreForPlayer, 
-  getGameState 
+import {
+  addPlayer,
+  getPlayers,
+  startGame,
+  rollDiceForPlayer,
+  holdDiceForPlayer,
+  scoreForPlayer,
+  getGameState
 } from './gameState.js';
 
 const app = express();
-const PORT = 3000;
+const PORT = 8000;
 
 // Middleware
 app.use(bodyParser.json());
@@ -37,24 +37,6 @@ app.set('view engine', 'pug');
 
 // Static files
 app.use(express.static(path.join(__dirname, '../client')));
-
-// Lobby route
-app.get('/', async (req, res, next) => {
-  try {
-    console.log('>>> Henter forside...');
-    const id = req.sessionID;
-    if (!req.session.playerName) {
-      console.log('>>> Ingen spiller i session. Viser lobby.');
-      res.render('lobby', { players: getPlayers(), gameStarted: getGameState(id).started });
-    } else {
-      console.log('>>> Spiller fundet i session. Sender index.html');
-      res.sendFile(path.join(__dirname, '../client/index.html'));
-    }
-  } catch (error) {
-    console.error('Fejl i / route:', error);
-    next(error); // Giver fejlen videre til Express
-  }
-});
 
 // API: join game
 app.post('/api/join', (req, res) => {

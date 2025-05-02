@@ -454,3 +454,10 @@ input[type="text"] {
   transform: scale(1.05);
   opacity: 0.9;
 }
+
+.held-dice {
+  border: 3px solid #00ffcc;
+  border-radius: 10px;
+  transform: scale(1.05);
+  box-shadow: 0 0 10px #00ffcc;
+}
