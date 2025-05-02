@@ -4,19 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lobby</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
 </head>
 <body class="bg-gray-100">
     <div class="MainLayout">
         <h1 class="glitch" style="text-align: center;">Lobby</h1>
+        <div>
+            <form>
+                <label for="uname">Player name:</label><br>
+                <input type="text" id="uname" name="uname"><br>
+                <input type="submit" id="unamebtn">
+            </form>
+        </div>
         <table>
             <thead>
                 <tr>
                     <th>Players:</th>
                 </tr>
             </thead>
-            <tbody>
+            <tbody id="lobbytable">
                 <tr>
                     <td>John Doe</td>
                 </tr>
@@ -29,14 +35,12 @@
                 <tr>
                     <td>Alice Brown</td>
                 </tr>
-                <tr>
-                    <td>Bob Williams</td>
-                </tr>
+
             </tbody>
         </table>
         <div class="button-container">
-            <button class="btn btn-primary">Start Game</button>
-            <button class="btn btn-secondary">Leave Lobby</button>
+            <button class="btn btn-primary" id="startGameButton">Start Game</button>
+            <!-- <button class="btn btn-secondary" id="leaveLobbyButton">Leave Lobby</button> -->
         </div>
         <div class="footer">
             <p>&copy; 2025 M&M. All rights reserved.</p>
