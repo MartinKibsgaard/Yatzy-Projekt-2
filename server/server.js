@@ -40,6 +40,9 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 // API: join game
 app.post('/api/join', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
   const { name } = req.body;
   if (!name) return res.status(400).send('Manglende navn');
   req.session.playerName = name;
@@ -49,6 +52,9 @@ app.post('/api/join', (req, res) => {
 
 // API: get players
 app.get('/api/players', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.json(getPlayers());
 });
 
