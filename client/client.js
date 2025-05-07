@@ -1,15 +1,23 @@
 // Join game
 export async function joinGame(name) {
-  const response = await fetch('http://localhost:8000/api/join', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name }),
-  });
+  try {
+      const response = await fetch('http://localhost:8000/api/join', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name }),
+      });
 
-  if (!response.ok) {
-    throw new Error('Failed to join the game');
+      if (!response.ok) {
+          throw new Error(`Failed to join game: ${response.statusText}`);
+      }
+
+      return await response.json();
+  } catch (error) {
+      console.error('Error in joinGame:', error);
+      throw error;
   }
-  return true;
 }
 
 // Get the list of players

@@ -47,8 +47,8 @@ app.post('/api/join', (req, res) => {
   if (!name) return res.status(400).send('Manglende navn');
   req.session.playerName = name;
   addPlayer(name, req.sessionID);
-  res.redirect('/');
-});
+  res.status(200).json({ message: 'Player joined successfully' }); // <-- ændringen
+  });
 
 // API: get players
 app.get('/api/players', (req, res) => {
