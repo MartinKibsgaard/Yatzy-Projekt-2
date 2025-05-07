@@ -1,3 +1,5 @@
+import { rollDice, holdDice, scoreField, getGameState } from './client.js';
+
 document.addEventListener("DOMContentLoaded", () => {
   const rollButton = document.getElementById("rollButton");
   const diceImgs = [
