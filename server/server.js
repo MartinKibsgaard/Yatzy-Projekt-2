@@ -3,6 +3,7 @@ import session from 'express-session';
 import bodyParser from 'body-parser';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cors from 'cors';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,6 +22,10 @@ const app = express();
 const PORT = 8000;
 
 // Middleware
+app.use(cors({
+  origin: 'http://127.0.0.1:5500',
+  credentials: true
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -40,21 +45,18 @@ app.use(express.static(path.join(__dirname, '../client')));
 
 // API: join game
 app.post('/api/join', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
-  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   const { name } = req.body;
   if (!name) return res.status(400).send('Manglende navn');
+  
   req.session.playerName = name;
   addPlayer(name, req.sessionID);
-  res.status(200).json({ message: 'Player joined successfully' }); // <-- ændringen
-  });
+  
+  res.status(200).json({ message: 'Player joined successfully' });
+});
+
 
 // API: get players
 app.get('/api/players', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://127.0.0.1:5500');
-  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
-  res.header('Access-Control-Allow-Headers', 'Content-Type');
   res.json(getPlayers());
 });
 
