@@ -1,5 +1,3 @@
-// server/gameState.mjs
-
 import {
   rollDice,
   sameValuePoints,
@@ -72,8 +70,17 @@ export function holdDiceForPlayer(id, idx, hold) {
 export function scoreForPlayer(id, section, idx) {
   const p = findPlayer(id);
   if (!p) return { error: 'Player not found' };
+
+  if (section === 'upper' && p.scores.upper[idx] !== null) {
+    return { error: 'Field already scored' };
+  }
+  if (section === 'lower' && p.scores.lower[idx] !== null) {
+    return { error: 'Field already scored' };
+  }
+
   const vals = p.dice;
   let score = 0;
+
   if (section === 'upper') {
     score = sameValuePoints(idx + 1, vals);
     p.scores.upper[idx] = score;
@@ -92,12 +99,14 @@ export function scoreForPlayer(id, section, idx) {
     }
     p.scores.lower[idx] = score;
   }
-  // Reset turn
+
   p.dice = [0, 0, 0, 0, 0];
   p.held = [false, false, false, false, false];
   p.throwCount = 0;
+
   return { score, scores: p.scores };
 }
+
 
 function calculateTotal(player) {
   const u = player.scores.upper.reduce((a, v) => a + (v || 0), 0);

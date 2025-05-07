@@ -12,12 +12,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let held = [false, false, false, false, false];
 
-  // Vis terninger
   function updateDice(dice, heldArray) {
+    const isFirstLoad = dice.every(val => val === 0);
+    const introImages = ["y.png", "a.png", "t.png", "z.png", "y.png"];
+
     for (let i = 0; i < diceImgs.length; i++) {
-      if (dice[i] > 0) {
+      if (isFirstLoad) {
+        diceImgs[i].src = `/images/${introImages[i]}`;
+      } else if (dice[i] > 0) {
         diceImgs[i].src = `/images/${dice[i]}.png`;
+      } else {
+        diceImgs[i].src = `/images/0.png`;
       }
+
       diceImgs[i].classList.toggle("dice-rolling", !heldArray[i]);
       diceImgs[i].classList.toggle("held-dice", heldArray[i]);
     }
@@ -27,42 +34,30 @@ document.addEventListener("DOMContentLoaded", () => {
     const state = await getGameState();
     updateDice(state.dice, state.held);
     held = [...state.held];
-  
-    document.getElementById(
-      "turnDisplay"
-    ).textContent = `Turn: ${state.throwCount}`;
-  
+
+    document.getElementById("turnDisplay").textContent = `Turn: ${state.throwCount}`;
+
     // Dynamiske scores
     const dynamicScores = state.dynamicScores;
-  
+
     const scoreKeys = [
-      "1s",
-      "2s",
-      "3s",
-      "4s",
-      "5s",
-      "6s",
-      "onePair",
-      "twoPairs",
-      "threeSame",
-      "fourSame",
-      "fullHouse",
-      "smallStraight",
-      "largeStraight",
-      "chance",
-      "yatzy",
+      "1s", "2s", "3s", "4s", "5s", "6s",
+      "onePair", "twoPairs", "threeSame", "fourSame",
+      "fullHouse", "smallStraight", "largeStraight", "chance", "yatzy"
     ];
+
     const upper = state.scores.upper;
     const lower = state.scores.lower;
-  
+
     scoreKeys.forEach((key, i) => {
-      const input = document.getElementById(
-        "input" + key.charAt(0).toUpperCase() + key.slice(1)
-      );
+      const input = document.getElementById("input" + key.charAt(0).toUpperCase() + key.slice(1));
       const val = i < 6 ? upper[i] : lower[i - 6];
+
       if (input) {
-        input.value = val ?? dynamicScores[key] ?? ""; // Brug dynamiske scores
+        input.value = val ?? dynamicScores[key] ?? "";
         input.classList.toggle("locked-input", val !== null);
+        input.classList.toggle("active-score", val === null);
+
         if (val === null) {
           input.onclick = async () => {
             await scoreField(i < 6 ? "upper" : "lower", i < 6 ? i : i - 6);
@@ -71,27 +66,54 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
-  
+
+    // Sum og bonus
     document.getElementById("inputSum").value = state.sum;
     document.getElementById("inputBonus").value = state.bonus;
     document.getElementById("inputTotal").value = state.total;
+
+    // ✅ Spil slut: alle felter er låst
+    const filledCount = [...upper, ...lower].filter(v => v !== null).length;
+    if (filledCount === 15) {
+      rollButton.disabled = true;
+      rollButton.textContent = "🎉 Spillet er slut!";
+      rollButton.classList.add("game-over");
+
+      alert(`🎉 Spillet er færdigt! Din score blev: ${state.total} point`);
+      window.location.href = "lobby.html";
+    }
   }
 
-  // Roll-knap
+  // Roll-knap med ternings-animation
   rollButton.addEventListener("click", async () => {
+    // Start rulle-animation
+    diceImgs.forEach(img => {
+      img.classList.add("dice-rolling");
+    });
+
+    setTimeout(() => {
+      diceImgs.forEach(img => {
+        img.classList.remove("dice-rolling");
+      });
+    }, 600);
+
     await rollDice();
     await refresh();
   });
 
-  // Hold/unhold klik på terninger
+  // Klik på terning for at holde
   diceImgs.forEach((img, i) => {
     img.addEventListener("click", async () => {
+      const state = await getGameState();
+      const isFirstLoad = state.throwCount === 0 && state.dice.every(val => val === 0);
+      if (isFirstLoad) return;
+
       const newHold = !held[i];
       await holdDice(i, newHold);
       await refresh();
     });
   });
 
-  // Initial visning
+  // Første visning
   refresh();
 });

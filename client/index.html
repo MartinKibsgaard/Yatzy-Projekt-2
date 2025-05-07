@@ -8,7 +8,7 @@
     <!-- Stylesheet fra /client/styles.css -->
     <link rel="stylesheet" href="styles.css" />
   </head>
-  <body>  
+  <body>
     <!-- Info-knap og modal -->
     <div class="info-container">
       <button id="infoButton" class="infoButton">Info</button>
@@ -18,21 +18,43 @@
           <h3>Yatzy med 5 terninger – Regler</h3>
           <ul>
             <li>Spillet spilles med 5 terninger.</li>
-            <li>Du har op til 3 slag pr. tur. Efter hvert slag kan du vælge at holde enkelte terninger ved at klikke på dem.</li>
-            <li>Når du har kastet 3 gange, skal du vælge mindst ét scorefelt for at gemme dine point – herefter starter din tur forfra.</li>
-            <li>Scorefelterne er inddelt i to sektioner:
+            <li>
+              Du har op til 3 slag pr. tur. Efter hvert slag kan du vælge at
+              holde enkelte terninger ved at klikke på dem.
+            </li>
+            <li>
+              Når du har kastet 3 gange, skal du vælge mindst ét scorefelt for
+              at gemme dine point – herefter starter din tur forfra.
+            </li>
+            <li>
+              Scorefelterne er inddelt i to sektioner:
               <ul>
-                <li><strong>Øvre sektion:</strong> 1'ere–6'ere, sum ≥63 giver 50 bonuspoint.</li>
-                <li><strong>Nedre sektion:</strong> One Pair, Two Pairs, Three-of-a-Kind, Four-of-a-Kind, Full House, Small Straight, Large Straight, Chance, Yatzy.</li>
+                <li>
+                  <strong>Øvre sektion:</strong> 1'ere–6'ere, sum ≥63 giver 50
+                  bonuspoint.
+                </li>
+                <li>
+                  <strong>Nedre sektion:</strong> One Pair, Two Pairs,
+                  Three-of-a-Kind, Four-of-a-Kind, Full House, Small Straight,
+                  Large Straight, Chance, Yatzy.
+                </li>
               </ul>
             </li>
           </ul>
           <h3>Programforklaring</h3>
           <ul>
-            <li><strong>Roll-knappen:</strong> Tryk for at kaste terningerne.</li>
+            <li>
+              <strong>Roll-knappen:</strong> Tryk for at kaste terningerne.
+            </li>
             <li><strong>Hold:</strong> Klik på en terning for at holde den.</li>
-            <li><strong>Antal slag:</strong> Maks. 3 slag pr. tur. Skorer du ikke, kan du ikke kaste igen.</li>
-            <li><strong>Score:</strong> Klik på et inputfelt for at låse det og gemme point, så starter næste tur.</li>
+            <li>
+              <strong>Antal slag:</strong> Maks. 3 slag pr. tur. Skorer du ikke,
+              kan du ikke kaste igen.
+            </li>
+            <li>
+              <strong>Score:</strong> Klik på et inputfelt for at låse det og
+              gemme point, så starter næste tur.
+            </li>
           </ul>
         </div>
       </div>
@@ -44,11 +66,46 @@
       <h3 id="turnDisplay">Turn: 0</h3>
 
       <table id="diceTable">
-        <td><img id="diceImg1" class="dice" src="/images/y.png" alt="Dice reset" /></td>
-        <td><img id="diceImg2" class="dice" src="/images/a.png" alt="Dice reset" /></td>
-        <td><img id="diceImg3" class="dice" src="/images/t.png" alt="Dice reset" /></td>
-        <td><img id="diceImg4" class="dice" src="/images/z.png" alt="Dice reset" /></td>
-        <td><img id="diceImg5" class="dice" src="/images/y.png" alt="Dice reset" /></td>
+        <td>
+          <img
+            id="diceImg1"
+            class="dice"
+            src="/images/y.png"
+            alt="Dice reset"
+          />
+        </td>
+        <td>
+          <img
+            id="diceImg2"
+            class="dice"
+            src="/images/a.png"
+            alt="Dice reset"
+          />
+        </td>
+        <td>
+          <img
+            id="diceImg3"
+            class="dice"
+            src="/images/t.png"
+            alt="Dice reset"
+          />
+        </td>
+        <td>
+          <img
+            id="diceImg4"
+            class="dice"
+            src="/images/z.png"
+            alt="Dice reset"
+          />
+        </td>
+        <td>
+          <img
+            id="diceImg5"
+            class="dice"
+            src="/images/y.png"
+            alt="Dice reset"
+          />
+        </td>
       </table>
 
       <button id="rollButton">Roll</button>
@@ -60,28 +117,117 @@
 
       <div id="yatzyBlock">
         <table id="blockValues" class="scoreTable">
-          <!-- Øvre sektion -->
-          <tr><td><label for="input1s"><b>1s</b></label><input id="input1s" class="inputs" readonly /></td></tr>
-          <tr><td><label for="input2s"><b>2s</b></label><input id="input2s" class="inputs" readonly /></td></tr>
-          <tr><td><label for="input3s"><b>3s</b></label><input id="input3s" class="inputs" readonly /></td></tr>
-          <tr><td><label for="input4s"><b>4s</b></label><input id="input4s" class="inputs" readonly /></td></tr>
-          <tr><td><label for="input5s"><b>5s</b></label><input id="input5s" class="inputs" readonly /></td></tr>
           <tr>
-            <td><label for="input6s"><b>6s</b></label><input id="input6s" class="inputs" readonly /></td>
-            <td><label for="inputSum"><b>Sum</b></label><input id="inputSum" class="inputs" disabled /></td>
-            <td><label for="inputBonus"><b>Bonus</b></label><input id="inputBonus" class="inputs" disabled /></td>
+            <td>
+              <label for="input1s"><b>1s</b></label
+              ><input id="input1s" type="text" class="inputs" readonly />
+            </td>
           </tr>
-          <!-- Nedre sektion -->
-          <tr><td><label for="inputOnePairs"><b>One Pair</b></label><input id="inputOnePairs" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputTwoPairs"><b>Two Pairs</b></label><input id="inputTwoPairs" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputThreeSame"><b>Three Same</b></label><input id="inputThreeSame" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputFourSame"><b>Four Same</b></label><input id="inputFourSame" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputFullHouse"><b>Full House</b></label><input id="inputFullHouse" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputSmallStraight"><b>Small Straight</b></label><input id="inputSmallStraight" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputLargeStraight"><b>Large Straight</b></label><input id="inputLargeStraight" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputChance"><b>Chance</b></label><input id="inputChance" class="inputs" readonly /></td></tr>
-          <tr><td><label for="inputYatzy"><b>Yatzy</b></label><input id="inputYatzy" class="inputs" readonly /></td>
-            <td><label for="inputTotal"><b>Total</b></label><input id="inputTotal" class="inputs" disabled /></td>
+          <tr>
+            <td>
+              <label for="input2s"><b>2s</b></label
+              ><input id="input2s" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="input3s"><b>3s</b></label
+              ><input id="input3s" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="input4s"><b>4s</b></label
+              ><input id="input4s" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="input5s"><b>5s</b></label
+              ><input id="input5s" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="input6s"><b>6s</b></label
+              ><input id="input6s" type="text" class="inputs" readonly />
+            </td>
+            <td>
+              <label for="inputSum"><b>Sum</b></label
+              ><input id="inputSum" type="text" class="inputs" disabled />
+            </td>
+            <td>
+              <label for="inputBonus"><b>Bonus</b></label
+              ><input id="inputBonus" type="text" class="inputs" disabled />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputOnePair"><b>One Pair</b></label
+              ><input id="inputOnePair" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputTwoPairs"><b>Two Pairs</b></label
+              ><input id="inputTwoPairs" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputThreeSame"><b>Three Same</b></label
+              ><input id="inputThreeSame" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputFourSame"><b>Four Same</b></label
+              ><input id="inputFourSame" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputFullHouse"><b>Full House</b></label
+              ><input id="inputFullHouse" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputSmallStraight"><b>Small Straight</b></label
+              ><input
+                id="inputSmallStraight"
+                type="text"
+                class="inputs"
+                readonly
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputLargeStraight"><b>Large Straight</b></label
+              ><input
+                id="inputLargeStraight"
+                type="text"
+                class="inputs"
+                readonly
+              />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputChance"><b>Chance</b></label
+              ><input id="inputChance" type="text" class="inputs" readonly />
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <label for="inputYatzy"><b>Yatzy</b></label
+              ><input id="inputYatzy" type="text" class="inputs" readonly />
+            </td>
+            <td>
+              <label for="inputTotal"><b>Total</b></label
+              ><input id="inputTotal" type="text" class="inputs" disabled />
+            </td>
           </tr>
         </table>
       </div>
@@ -89,6 +235,5 @@
 
     <script type="module" src="/client.js"></script>
     <script type="module" src="/frontend.js"></script>
-
   </body>
 </html>
