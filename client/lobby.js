@@ -9,6 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
   
     console.log("Submitted username: " + username)
     await joinGame(username);
-    
+    console.log("Game joined with username: " + username)
   });
 });
