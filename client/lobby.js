@@ -1,42 +1,48 @@
-import { getGamePlayers, joinGame, startGame } from "./client.js";
+import { joinGame, getGamePlayers, startGame } from "./client.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const usernameInput = document.getElementById("usernameInput");
   const submitButton = document.getElementById("submitBtn");
+  const startGameButton = document.getElementById("startGameButton");
+  const lobbyTable = document.getElementById("lobbytable");
   const startButton = document.getElementById("startGameButton");
 
-  submitButton.addEventListener("click", async () => {
-    let username = usernameInput.value;
-  
-    console.log("Submitted username: " + username)
+submitButton.addEventListener("click", async (e) => {
+  e.preventDefault();
+  const username = usernameInput.value;
+
+  if (!username) {
+    alert("Indtast et navn");
+    return;
+  }
+
+  try {
     await joinGame(username);
-    await dynamicTable();
-    console.log("Game joined with username: " + username)
-  });
+    usernameInput.disabled = true; // 🔒 Lås inputfeltet
+    submitButton.disabled = true;  // 🔒 Lås submit-knappen
+    submitButton.value = "✅ Navn oprettet";
+  } catch (err) {
+    console.error("Noget gik galt ved join:", err);
+    alert("Kunne ikke oprette spiller – prøv igen.");
+  }
+});
 
-  startButton.addEventListener("click", async () => {
-    window.location.replace("http://127.0.0.1:5500/client/index.html");
-    startGame();
-    console.log("Game started")
-  });
-
-  dynamicTable(); // initialt kald når DOM'en er klar
+startGameButton.addEventListener("click", async () => {
+  await startGame();
+  window.location.href = "index.html";
+});
 
 
-  async function dynamicTable() {
-    try {
-        let players = await getGamePlayers();
+  async function updateLobby() {
+    const players = await getGamePlayers();
+    lobbyTable.innerHTML = "";
+    players.forEach(player => {
+      const row = document.createElement("tr");
+      row.innerHTML = `<td>${player.name}</td>`;
+      lobbyTable.appendChild(row);
+    });
+  }
 
-        let tableBody = document.querySelector('#lobbytable');
-        tableBody.innerHTML = ''; // Tøm tabellen først
-
-        players.forEach(player => {
-            let row = document.createElement('tr');
-            row.innerHTML = `<td>${player.name}</td>`;
-            tableBody.appendChild(row);
-        });
-    } catch (error) {
-        console.error('Error fetching data:', error);
-    }
-}
+  updateLobby();
+  setInterval(updateLobby, 2000); 
 });
