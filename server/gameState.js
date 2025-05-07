@@ -11,7 +11,8 @@ import {
   smallStraightPoints,
   largeStraightPoints,
   chancePoints,
-  yatzyPoints
+  yatzyPoints,
+  calculatePoints
 } from './yatzy.mjs';
 
 // In-memory state
@@ -104,7 +105,6 @@ function calculateTotal(player) {
   return u + l;
 }
 
-// Giver fuld gameState for klienten
 export function getGameState(requestingId) {
   const players = state.players.map(p => ({
     id: p.id,
@@ -114,7 +114,7 @@ export function getGameState(requestingId) {
   }));
 
   const me = findPlayer(requestingId);
-  let dice, held, throwCount, scores, sum, bonus, total;
+  let dice, held, throwCount, scores, sum, bonus, total, dynamicScores;
   if (me) {
     dice = me.dice;
     held = me.held;
@@ -123,6 +123,7 @@ export function getGameState(requestingId) {
     sum = me.scores.upper.reduce((a, v) => a + (v || 0), 0);
     bonus = sum >= 63 ? 50 : 0;
     total = calculateTotal(me);
+    dynamicScores = calculatePoints(dice); // Beregn dynamiske scores
   } else {
     dice = [0, 0, 0, 0, 0];
     held = [false, false, false, false, false];
@@ -131,6 +132,7 @@ export function getGameState(requestingId) {
     sum = 0;
     bonus = 0;
     total = 0;
+    dynamicScores = calculatePoints(dice); // Tomme terninger
   }
 
   return {
@@ -143,6 +145,7 @@ export function getGameState(requestingId) {
     scores,
     sum,
     bonus,
-    total
+    total,
+    dynamicScores // Tilføj dynamiske scores
   };
 }

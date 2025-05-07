@@ -23,17 +23,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
-  // Hent og vis state
   async function refresh() {
     const state = await getGameState();
     updateDice(state.dice, state.held);
     held = [...state.held];
-
+  
     document.getElementById(
       "turnDisplay"
     ).textContent = `Turn: ${state.throwCount}`;
-
-    // Score inputs
+  
+    // Dynamiske scores
+    const dynamicScores = state.dynamicScores;
+  
     const scoreKeys = [
       "1s",
       "2s",
@@ -53,14 +54,14 @@ document.addEventListener("DOMContentLoaded", () => {
     ];
     const upper = state.scores.upper;
     const lower = state.scores.lower;
-
+  
     scoreKeys.forEach((key, i) => {
       const input = document.getElementById(
         "input" + key.charAt(0).toUpperCase() + key.slice(1)
       );
       const val = i < 6 ? upper[i] : lower[i - 6];
       if (input) {
-        input.value = val ?? "";
+        input.value = val ?? dynamicScores[key] ?? ""; // Brug dynamiske scores
         input.classList.toggle("locked-input", val !== null);
         if (val === null) {
           input.onclick = async () => {
@@ -70,7 +71,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
       }
     });
-
+  
     document.getElementById("inputSum").value = state.sum;
     document.getElementById("inputBonus").value = state.bonus;
     document.getElementById("inputTotal").value = state.total;
