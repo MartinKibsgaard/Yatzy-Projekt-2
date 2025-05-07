@@ -1,8 +1,9 @@
-import { getGamePlayers, joinGame } from "./client.js";
+import { getGamePlayers, joinGame, startGame } from "./client.js";
 
 document.addEventListener("DOMContentLoaded", () => {
   const usernameInput = document.getElementById("usernameInput");
   const submitButton = document.getElementById("submitBtn");
+  const startButton = document.getElementById("startGameButton");
 
   submitButton.addEventListener("click", async () => {
     let username = usernameInput.value;
@@ -11,6 +12,12 @@ document.addEventListener("DOMContentLoaded", () => {
     await joinGame(username);
     await dynamicTable();
     console.log("Game joined with username: " + username)
+  });
+
+  startButton.addEventListener("click", async () => {
+    window.location.replace("http://127.0.0.1:5500/client/index.html");
+    startGame();
+    console.log("Game started")
   });
 
   dynamicTable(); // initialt kald når DOM'en er klar
