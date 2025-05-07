@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitButton = document.getElementById("submitBtn");
   const startGameButton = document.getElementById("startGameButton");
   const lobbyTable = document.getElementById("lobbytable");
+  const startButton = document.getElementById("startGameButton");
 
 submitButton.addEventListener("click", async (e) => {
   e.preventDefault();
