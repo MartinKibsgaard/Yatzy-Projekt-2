@@ -1,20 +1,28 @@
 // Join game
-async function joinGame(name) {
-  const response = await fetch('/api/join', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ name }),
-  });
+export async function joinGame(name) {
+  try {
+      const response = await fetch('http://localhost:8000/api/join', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ name }),
+      });
 
-  if (!response.ok) {
-    throw new Error('Failed to join the game');
+      if (!response.ok) {
+          throw new Error(`Failed to join game: ${response.statusText}`);
+      }
+
+      return await response.json();
+  } catch (error) {
+      console.error('Error in joinGame:', error);
+      throw error;
   }
-  return true;
 }
 
 // Get the list of players
-async function getPlayers() {
-  const response = await fetch('/api/players');
+export async function getGamePlayers() {
+  const response = await fetch('http://localhost:8000/api/players');
   if (!response.ok) {
     throw new Error('Failed to fetch players');
   }
@@ -22,8 +30,8 @@ async function getPlayers() {
 }
 
 // Start the game
-async function startGame() {
-  const response = await fetch('/api/start', {
+export async function startGame() {
+  const response = await fetch('http://localhost:8000/api/start', {
     method: 'POST',
   });
   if (!response.ok) {
@@ -33,8 +41,8 @@ async function startGame() {
 }
 
 // Roll dice for the current player
-async function rollDice() {
-  const response = await fetch('/api/roll', {
+export async function rollDice() {
+  const response = await fetch('http://localhost:8000/api/roll', {
     method: 'POST',
   });
   if (!response.ok) {
@@ -44,8 +52,8 @@ async function rollDice() {
 }
 
 // Hold or unhold a dice
-async function holdDice(index, hold) {
-  const response = await fetch('/api/hold', {
+export async function holdDice(index, hold) {
+  const response = await fetch('http://localhost:8000/api/hold', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ index, hold }),
@@ -57,8 +65,8 @@ async function holdDice(index, hold) {
 }
 
 // Score a field
-async function scoreField(section, index) {
-  const response = await fetch('/api/score', {
+export async function scoreField(section, index) {
+  const response = await fetch('http://localhost:8000/api/score', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ section, index }),
@@ -70,8 +78,8 @@ async function scoreField(section, index) {
 }
 
 // Get the full game state
-async function getGameState() {
-  const response = await fetch('/api/state');
+export async function getGameState() {
+  const response = await fetch('http://localhost:8000/api/state');
   if (!response.ok) {
     throw new Error('Failed to fetch game state');
   }
