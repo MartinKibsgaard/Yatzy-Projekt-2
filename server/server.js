@@ -14,7 +14,8 @@ import {
   rollDiceForPlayer,
   holdDiceForPlayer,
   scoreForPlayer,
-  getGameState
+  getGameState,
+  restartPlayerGame
 } from './gameState.js';
 
 const app = express();
@@ -90,6 +91,19 @@ app.get('/api/state', (req, res) => {
   const id = req.sessionID;
   res.json(getGameState(id));
 });
+
+app.get('/api/player/:id', (req, res) => {
+  const { id } = req.params;
+  const state = getGameState(id);
+  res.json(state);
+});
+
+app.post("/api/restart", (req, res) => {
+  const id = req.sessionID;
+  const result = restartPlayerGame(id); 
+  res.json(result);
+});
+
 
 // Start server
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));

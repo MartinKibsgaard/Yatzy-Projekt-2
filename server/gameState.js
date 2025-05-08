@@ -137,3 +137,18 @@ export function getGameState(id) {
     dynamicScores: calculatePoints(p.dice)
   };
 }
+
+export function restartPlayerGame(id) {
+  const player = findPlayer(id);
+  if (!player) return { error: "Spiller ikke fundet" };
+
+  player.scores = {
+    upper: Array(6).fill(null),
+    lower: Array(9).fill(null),
+  };
+  player.throwCount = 0;
+  player.dice = [0, 0, 0, 0, 0];
+  player.held = [false, false, false, false, false];
+
+  return { message: "Spil nulstillet" };
+}
