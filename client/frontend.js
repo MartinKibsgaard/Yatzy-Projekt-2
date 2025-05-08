@@ -85,7 +85,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function scoreboardUpdater() {
     const players = await getGamePlayers();
-    const scoreboardTable = document.getElementById("scoreboardList");
+    const scoreboardTable = document.getElementById("scoreboardTable");
     scoreboardTable.innerHTML = "";
 
     players.forEach((player) => {
@@ -118,4 +118,5 @@ document.addEventListener("DOMContentLoaded", () => {
 
   refresh();
   scoreboardUpdater();
+  setInterval(scoreboardUpdater, 5000);
 });
