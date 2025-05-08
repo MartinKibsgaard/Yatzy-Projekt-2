@@ -5,7 +5,6 @@ document.addEventListener("DOMContentLoaded", () => {
   const submitButton = document.getElementById("submitBtn");
   const startGameButton = document.getElementById("startGameButton");
   const lobbyTable = document.getElementById("lobbytable");
-  const startButton = document.getElementById("startGameButton");
 
   submitButton.addEventListener("click", async (e) => {
     e.preventDefault();
@@ -48,7 +47,7 @@ document.addEventListener("DOMContentLoaded", () => {
       lobbyTable.appendChild(row);
     });
 
-    startButton.disabled = players.length < 2;
+    //startGameButton.disabled = players.length < 2;
   }
 
   updateLobby();

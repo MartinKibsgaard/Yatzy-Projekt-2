@@ -513,3 +513,46 @@ input:disabled {
   font-weight: bold;
   border: 1px solid #00ffcc;
 }
+
+.scoreboard-card {
+  position: fixed;
+  top: 1rem;
+  right: 1rem;
+  width: 250px;
+  background-color: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  padding: 1rem;
+  z-index: 900;
+  color: #ffffff;
+  backdrop-filter: blur(10px);
+}
+
+.scoreboard-card h2 {
+  margin-top: 0;
+  font-size: 1.5rem;
+  text-align: center;
+  color: #ff0080;
+  font-family: "Orbitron", sans-serif;
+  text-shadow: 0 0 5px #ff0080, 0 0 10px #7928ca;
+}
+
+.scoreboard-content ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.scoreboard-content li {
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  font-weight: 600;
+  text-align: center;
+  color: #00ffcc;
+  text-shadow: 0 0 5px rgba(0, 255, 204, 0.5);
+}
+
+.scoreboard-content li:last-child {
+  border-bottom: none;
+}
