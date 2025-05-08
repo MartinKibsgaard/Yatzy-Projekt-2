@@ -347,6 +347,116 @@ input[type="text"] {
   animation: none;
 }
 
+.hover-tooltip {
+  position: absolute;
+  background-color: rgba(0,0,0,0.8);
+  color: #00ffcc;
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 14px;
+  pointer-events: none;
+  z-index: 9999;
+  box-shadow: 0 0 10px #00ffcc;
+  max-width: 250px;
+  text-align: left;
+}
+
+.hover-tooltip.fancy {
+  background: rgba(0, 0, 0, 0.85);
+  border: 2px solid #00ffcc;
+  padding: 12px;
+  border-radius: 10px;
+  color: #00ffcc;
+  font-family: "Orbitron", sans-serif;
+  font-size: 13px;
+  box-shadow: 0 0 15px #00ffcc, 0 0 25px #ff0080;
+  z-index: 9999;
+  max-width: 300px;
+  pointer-events: none;
+  animation: glowFade 0.3s ease-out;
+}
+
+.hover-tooltip.fancy h4 {
+  margin: 0 0 8px 0;
+  color: #ff0080;
+  font-size: 16px;
+  text-shadow: 0 0 10px #ff0080;
+}
+
+.tooltip-section {
+  line-height: 1.6;
+  word-break: break-word;
+}
+
+.tooltip-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Orbitron", sans-serif;
+  font-size: 13px;
+}
+
+.tooltip-table th {
+  background-color: rgba(255, 0, 128, 0.15);
+  color: #ff0080;
+  padding: 6px;
+  text-align: center;
+  border-bottom: 1px solid #00ffcc;
+}
+
+.tooltip-table td {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #00ffcc;
+  text-align: left;
+}
+
+.tooltip-scoreboard {
+  display: flex;
+  gap: 20px;
+  justify-content: space-between;
+}
+
+.tooltip-scoreboard .tooltip-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: "Orbitron", sans-serif;
+  font-size: 13px;
+}
+
+.tooltip-scoreboard th {
+  background-color: rgba(255, 0, 128, 0.15);
+  color: #ff0080;
+  padding: 6px;
+  text-align: center;
+  border-bottom: 1px solid #00ffcc;
+}
+
+.tooltip-scoreboard td {
+  padding: 4px 8px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  color: #00ffcc;
+  text-align: left;
+}
+
+.lobby-btn-container {
+  position: fixed;
+  top: 10px;
+  left: 150px; 
+  z-index: 3000;
+  display: inline-block;
+}
+
+@keyframes glowFade {
+  from {
+    opacity: 0;
+    transform: translateY(-5px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes gradientShift {
   0% {
     background-position: 0% 50%;

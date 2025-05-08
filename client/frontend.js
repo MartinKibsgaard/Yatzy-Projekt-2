@@ -116,6 +116,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+const backBtn = document.getElementById("backToLobbyBtn");
+if (backBtn) {
+  backBtn.addEventListener("click", () => {
+    window.location.href = "lobby.html";
+  });
+}
+
   refresh();
   scoreboardUpdater();
   setInterval(scoreboardUpdater, 5000);
