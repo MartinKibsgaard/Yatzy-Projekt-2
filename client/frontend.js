@@ -32,28 +32,22 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function refresh() {
     const state = await getGameState();
-    const isMyTurn = state.youId === state.currentPlayerId;
 
     updateDice(state.dice, state.held);
     held = [...state.held];
 
-    document.getElementById("turnDisplay").textContent = isMyTurn
-      ? `Din tur (Slag: ${state.throwCount})`
-      : `Vent på tur...`;
+    document.getElementById("turnDisplay").textContent = `Slag: ${state.throwCount}`;
+    rollButton.disabled = state.throwCount >= 3;
 
-    rollButton.disabled = !isMyTurn;
-
-    // Dynamiske scores
     const dynamicScores = state.dynamicScores;
+    const upper = state.scores.upper;
+    const lower = state.scores.lower;
 
     const scoreKeys = [
       "1s", "2s", "3s", "4s", "5s", "6s",
       "onePair", "twoPairs", "threeSame", "fourSame",
       "fullHouse", "smallStraight", "largeStraight", "chance", "yatzy"
     ];
-
-    const upper = state.scores.upper;
-    const lower = state.scores.lower;
 
     scoreKeys.forEach((key, i) => {
       const input = document.getElementById("input" + key.charAt(0).toUpperCase() + key.slice(1));
@@ -62,10 +56,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (input) {
         input.value = val ?? dynamicScores[key] ?? "";
         input.classList.toggle("locked-input", val !== null);
-        input.classList.toggle("active-score", val === null && isMyTurn);
+        input.classList.toggle("active-score", val === null && state.throwCount > 0);
         input.onclick = null;
 
-        if (val === null && isMyTurn) {
+        if (val === null && state.throwCount > 0) {
           input.onclick = async () => {
             await scoreField(i < 6 ? "upper" : "lower", i < 6 ? i : i - 6);
             await refresh();
@@ -74,12 +68,10 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
 
-    // Sum og bonus
     document.getElementById("inputSum").value = state.sum;
     document.getElementById("inputBonus").value = state.bonus;
     document.getElementById("inputTotal").value = state.total;
 
-    // ✅ Spil slut: alle felter er låst
     const filledCount = [...upper, ...lower].filter(v => v !== null).length;
     if (filledCount === 15) {
       rollButton.disabled = true;
@@ -87,45 +79,36 @@ document.addEventListener("DOMContentLoaded", () => {
       rollButton.classList.add("game-over");
 
       alert(`🎉 Spillet er færdigt! Din score blev: ${state.total} point`);
-      window.location.href = "lobby.html";
+      // window.location.href = "lobby.html"; // Fjernet: vi vil ikke redirecte i singleplayer
     }
   }
 
-  async function scoreboardUpdater() {        
-        const players = await getGamePlayers();
-        scoreboardTable.innerHTML = "";
+  async function scoreboardUpdater() {
+    const players = await getGamePlayers();
+    const scoreboardTable = document.getElementById("scoreboardList");
+    scoreboardTable.innerHTML = "";
 
-        players.forEach((player) => {
-          const row = document.createElement("tr");
-          row.innerHTML = `<td>${player.name} | Points: ${player.total}</td>`;
-          scoreboardTable.appendChild(row);
-        });
-      }
+    players.forEach((player) => {
+      const row = document.createElement("li");
+      row.textContent = `${player.name} | Points: ${player.total}`;
+      scoreboardTable.appendChild(row);
+    });
+  }
 
   // Roll-knap med ternings-animation
   rollButton.addEventListener("click", async () => {
-    diceImgs.forEach(img => {
-      img.classList.add("dice-rolling");
-    });
-
-    setTimeout(() => {
-      diceImgs.forEach(img => {
-        img.classList.remove("dice-rolling");
-      });
-    }, 600);
+    diceImgs.forEach(img => img.classList.add("dice-rolling"));
+    setTimeout(() => diceImgs.forEach(img => img.classList.remove("dice-rolling")), 600);
 
     await rollDice();
     await refresh();
   });
 
-  // Klik på terning for at holde – kun hvis det er ens tur
   diceImgs.forEach((img, i) => {
     img.addEventListener("click", async () => {
       const state = await getGameState();
       const isFirstLoad = state.throwCount === 0 && state.dice.every(val => val === 0);
-      const isMyTurn = state.youId === state.currentPlayerId;
-
-      if (!isMyTurn || isFirstLoad) return;
+      if (isFirstLoad) return;
 
       const newHold = !held[i];
       await holdDice(i, newHold);
@@ -133,7 +116,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-  // Første visning
   refresh();
   scoreboardUpdater();
 });

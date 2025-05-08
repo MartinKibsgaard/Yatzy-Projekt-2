@@ -11,7 +11,6 @@ const __dirname = path.dirname(__filename);
 import {
   addPlayer,
   getPlayers,
-  startGame,
   rollDiceForPlayer,
   holdDiceForPlayer,
   scoreForPlayer,
@@ -51,27 +50,19 @@ app.post('/api/join', (req, res) => {
   }
 
   req.session.playerName = name;
-  req.session.hasJoined = true; 
+  req.session.hasJoined = true;
 
   addPlayer(name, req.sessionID);
 
   res.status(200).json({ message: 'Player joined successfully' });
 });
 
-
-
-// API: get players
+// API: get players (kan bruges til scoreboard i fremtiden)
 app.get('/api/players', (req, res) => {
   res.json(getPlayers());
 });
 
-// API: start game
-app.post('/api/start', (req, res) => {
-  const result = startGame();
-  res.json(result);
-});
-
-// API: roll dice for current player
+// API: roll dice
 app.post('/api/roll', (req, res) => {
   const id = req.sessionID;
   const result = rollDiceForPlayer(id);
@@ -94,12 +85,11 @@ app.post('/api/score', (req, res) => {
   res.json(result);
 });
 
-// API: get full game state or for one player
+// API: get full game state
 app.get('/api/state', (req, res) => {
   const id = req.sessionID;
   res.json(getGameState(id));
 });
-
 
 // Start server
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
