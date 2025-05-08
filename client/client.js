@@ -7,7 +7,7 @@ export async function joinGame(name) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({ name }),
-      credentials: 'include' // <-- krævet for at session virker
+      credentials: 'include' 
     });    
 
       if (!response.ok) {
@@ -23,17 +23,21 @@ export async function joinGame(name) {
 
 // Get the list of players
 export async function getGamePlayers() {
-  const response = await fetch('http://localhost:8000/api/players');
+  const response = await fetch('http://localhost:8000/api/players', {
+    credentials: 'include'
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch players');
   }
   return response.json();
 }
 
+
 // Start the game
 export async function startGame() {
   const response = await fetch('http://localhost:8000/api/start', {
     method: 'POST',
+    credentials: 'include'
   });
   if (!response.ok) {
     throw new Error('Failed to start the game');
@@ -45,6 +49,7 @@ export async function startGame() {
 export async function rollDice() {
   const response = await fetch('http://localhost:8000/api/roll', {
     method: 'POST',
+    credentials: 'include'
   });
   if (!response.ok) {
     throw new Error('Failed to roll dice');
@@ -52,10 +57,12 @@ export async function rollDice() {
   return response.json();
 }
 
+
 // Hold or unhold a dice
 export async function holdDice(index, hold) {
   const response = await fetch('http://localhost:8000/api/hold', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ index, hold }),
   });
@@ -65,10 +72,12 @@ export async function holdDice(index, hold) {
   return response.json();
 }
 
+
 // Score a field
 export async function scoreField(section, index) {
   const response = await fetch('http://localhost:8000/api/score', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ section, index }),
   });
@@ -80,7 +89,9 @@ export async function scoreField(section, index) {
 
 // Get the full game state
 export async function getGameState() {
-  const response = await fetch('http://localhost:8000/api/state');
+  const response = await fetch('http://localhost:8000/api/state', {
+    credentials: 'include'
+  });
   if (!response.ok) {
     throw new Error('Failed to fetch game state');
   }

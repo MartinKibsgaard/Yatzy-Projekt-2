@@ -32,10 +32,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
   async function refresh() {
     const state = await getGameState();
+    const isMyTurn = state.youId === state.currentPlayerId;
+
     updateDice(state.dice, state.held);
     held = [...state.held];
 
-    document.getElementById("turnDisplay").textContent = `Turn: ${state.throwCount}`;
+    document.getElementById("turnDisplay").textContent = isMyTurn
+      ? `Din tur (Slag: ${state.throwCount})`
+      : `Vent på tur...`;
+
+    rollButton.disabled = !isMyTurn;
 
     // Dynamiske scores
     const dynamicScores = state.dynamicScores;
@@ -56,9 +62,10 @@ document.addEventListener("DOMContentLoaded", () => {
       if (input) {
         input.value = val ?? dynamicScores[key] ?? "";
         input.classList.toggle("locked-input", val !== null);
-        input.classList.toggle("active-score", val === null);
+        input.classList.toggle("active-score", val === null && isMyTurn);
+        input.onclick = null;
 
-        if (val === null) {
+        if (val === null && isMyTurn) {
           input.onclick = async () => {
             await scoreField(i < 6 ? "upper" : "lower", i < 6 ? i : i - 6);
             await refresh();
@@ -86,7 +93,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // Roll-knap med ternings-animation
   rollButton.addEventListener("click", async () => {
-    // Start rulle-animation
     diceImgs.forEach(img => {
       img.classList.add("dice-rolling");
     });
@@ -101,12 +107,14 @@ document.addEventListener("DOMContentLoaded", () => {
     await refresh();
   });
 
-  // Klik på terning for at holde
+  // Klik på terning for at holde – kun hvis det er ens tur
   diceImgs.forEach((img, i) => {
     img.addEventListener("click", async () => {
       const state = await getGameState();
       const isFirstLoad = state.throwCount === 0 && state.dice.every(val => val === 0);
-      if (isFirstLoad) return;
+      const isMyTurn = state.youId === state.currentPlayerId;
+
+      if (!isMyTurn || isFirstLoad) return;
 
       const newHold = !held[i];
       await holdDice(i, newHold);

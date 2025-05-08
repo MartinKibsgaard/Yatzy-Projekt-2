@@ -21,11 +21,11 @@ import {
 const app = express();
 const PORT = 8000;
 
-// Middleware
 app.use(cors({
-  origin: 'http://127.0.0.1:5500',
+  origin: ['http://localhost:8000', 'http://127.0.0.1:8000'],
   credentials: true
 }));
+
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
@@ -33,12 +33,10 @@ app.use(session({
   secret: 'yatzy-secret',
   resave: false,
   saveUninitialized: true,
+  cookie: {
+    sameSite: 'lax'
+  }
 }));
-
-
-// Pug-templates
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
 
 // Static files
 app.use(express.static(path.join(__dirname, '../client')));
@@ -47,12 +45,19 @@ app.use(express.static(path.join(__dirname, '../client')));
 app.post('/api/join', (req, res) => {
   const { name } = req.body;
   if (!name) return res.status(400).send('Manglende navn');
-  
+
+  if (req.session.hasJoined) {
+    return res.status(400).json({ error: 'Du er allerede tilmeldt.' });
+  }
+
   req.session.playerName = name;
+  req.session.hasJoined = true; 
+
   addPlayer(name, req.sessionID);
-  
+
   res.status(200).json({ message: 'Player joined successfully' });
 });
+
 
 
 // API: get players

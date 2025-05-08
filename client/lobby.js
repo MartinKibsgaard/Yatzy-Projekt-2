@@ -7,42 +7,50 @@ document.addEventListener("DOMContentLoaded", () => {
   const lobbyTable = document.getElementById("lobbytable");
   const startButton = document.getElementById("startGameButton");
 
-submitButton.addEventListener("click", async (e) => {
-  e.preventDefault();
-  const username = usernameInput.value;
+  submitButton.addEventListener("click", async (e) => {
+    e.preventDefault();
+    const username = usernameInput.value;
+  
+    if (!username) {
+      alert("Indtast et navn");
+      return;
+    }
+  
+    try {
+      const response = await joinGame(username);
+  
+      if (response?.error) {
+        alert(response.error);
+        return;
+      }
+  
+      usernameInput.disabled = true;
+      submitButton.disabled = true;
+      submitButton.value = "✅ Navn oprettet";
+    } catch (err) {
+      console.error("Noget gik galt ved join:", err);
+      alert("Kunne ikke oprette spiller – SessionID allerede i brug.");
+    }
+  });  
 
-  if (!username) {
-    alert("Indtast et navn");
-    return;
-  }
-
-  try {
-    await joinGame(username);
-    usernameInput.disabled = true; // 🔒 Lås inputfeltet
-    submitButton.disabled = true;  // 🔒 Lås submit-knappen
-    submitButton.value = "✅ Navn oprettet";
-  } catch (err) {
-    console.error("Noget gik galt ved join:", err);
-    alert("Kunne ikke oprette spiller – prøv igen.");
-  }
-});
-
-startGameButton.addEventListener("click", async () => {
-  await startGame();
-  window.location.href = "index.html";
-});
-
+  startGameButton.addEventListener("click", async () => {
+    await startGame();
+    window.location.href = "index.html";
+  });
 
   async function updateLobby() {
     const players = await getGamePlayers();
     lobbyTable.innerHTML = "";
-    players.forEach(player => {
+
+    players.forEach((player) => {
       const row = document.createElement("tr");
       row.innerHTML = `<td>${player.name}</td>`;
       lobbyTable.appendChild(row);
     });
+
+    startButton.disabled = players.length < 2;
   }
 
   updateLobby();
-  setInterval(updateLobby, 2000); 
+  setInterval(updateLobby, 2000);
 });
