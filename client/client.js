@@ -10,42 +10,18 @@ export async function joinGame(name) {
       credentials: 'include' 
     });    
 
-      if (!response.ok) {
-          throw new Error(`Failed to join game: ${response.statusText}`);
-      }
+    if (!response.ok) {
+      throw new Error(`Failed to join game: ${response.statusText}`);
+    }
 
-      return await response.json();
+    return await response.json();
   } catch (error) {
-      console.error('Error in joinGame:', error);
-      throw error;
+    console.error('Error in joinGame:', error);
+    throw error;
   }
 }
 
-// Get the list of players
-export async function getGamePlayers() {
-  const response = await fetch('http://localhost:8000/api/players', {
-    credentials: 'include'
-  });
-  if (!response.ok) {
-    throw new Error('Failed to fetch players');
-  }
-  return response.json();
-}
-
-
-// Start the game
-export async function startGame() {
-  const response = await fetch('http://localhost:8000/api/start', {
-    method: 'POST',
-    credentials: 'include'
-  });
-  if (!response.ok) {
-    throw new Error('Failed to start the game');
-  }
-  return response.json();
-}
-
-// Roll dice for the current player
+// Roll dice
 export async function rollDice() {
   const response = await fetch('http://localhost:8000/api/roll', {
     method: 'POST',
@@ -56,7 +32,6 @@ export async function rollDice() {
   }
   return response.json();
 }
-
 
 // Hold or unhold a dice
 export async function holdDice(index, hold) {
@@ -71,7 +46,6 @@ export async function holdDice(index, hold) {
   }
   return response.json();
 }
-
 
 // Score a field
 export async function scoreField(section, index) {
@@ -94,6 +68,16 @@ export async function getGameState() {
   });
   if (!response.ok) {
     throw new Error('Failed to fetch game state');
+  }
+  return response.json();
+}
+
+export async function getGamePlayers() {
+  const response = await fetch('http://localhost:8000/api/players', {
+    credentials: 'include'
+  });
+  if (!response.ok) {
+    throw new Error('Failed to fetch players');
   }
   return response.json();
 }
