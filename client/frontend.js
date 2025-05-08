@@ -1,4 +1,4 @@
-import { rollDice, holdDice, scoreField, getGameState } from './client.js';
+import { rollDice, holdDice, scoreField, getGameState, getGamePlayers } from './client.js';
 
 document.addEventListener("DOMContentLoaded", () => {
   const rollButton = document.getElementById("rollButton");
@@ -83,6 +83,19 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   }
 
+  async function scoreboardUpdater() {
+    const players = await getGamePlayers();
+    const scoreboardTable = document.getElementById("scoreboardList");
+    scoreboardTable.innerHTML = "";
+
+    players.forEach((player) => {
+      const row = document.createElement("li");
+      row.textContent = `${player.name} | Points: ${player.total}`;
+      scoreboardTable.appendChild(row);
+    });
+  }
+
+  // Roll-knap med ternings-animation
   rollButton.addEventListener("click", async () => {
     diceImgs.forEach(img => img.classList.add("dice-rolling"));
     setTimeout(() => diceImgs.forEach(img => img.classList.remove("dice-rolling")), 600);
@@ -104,4 +117,5 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   refresh();
+  scoreboardUpdater();
 });
