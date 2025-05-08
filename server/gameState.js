@@ -1,5 +1,3 @@
-// server/gameState.mjs
-
 import {
   rollDice,
   sameValuePoints,
@@ -15,13 +13,32 @@ import {
   calculatePoints
 } from './yatzy.mjs';
 
-// In-memory state
 const state = {
   players: [],
   started: false,
+  currentPlayerIndex: 0,
 };
 
+function getCurrentPlayer() {
+  return state.players[state.currentPlayerIndex];
+}
+
+function nextPlayer() {
+  state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
+}
+
+function findPlayer(id) {
+  return state.players.find(p => p.id === id);
+}
+
+function calculateTotal(player) {
+  const u = player.scores.upper.reduce((a, v) => a + (v || 0), 0);
+  const l = player.scores.lower.reduce((a, v) => a + (v || 0), 0);
+  return u + l;
+}
+
 export function addPlayer(name, sessionId) {
+  console.log(`🔵 AddPlayer: ${name}, session: ${sessionId}`);
   if (state.started) return;
   if (!state.players.find(p => p.id === sessionId)) {
     state.players.push({
@@ -46,34 +63,43 @@ export function getPlayers() {
 
 export function startGame() {
   state.started = true;
+  state.currentPlayerIndex = 0;
   return { started: true };
 }
 
-function findPlayer(id) {
-  return state.players.find(p => p.id === id);
-}
-
 export function rollDiceForPlayer(id) {
-  const p = findPlayer(id);
-  if (!p) return { error: 'Player not found' };
-  if (p.throwCount >= 3) return { error: 'No rolls left' };
-  p.dice = rollDice(p.dice, p.held);
-  p.throwCount++;
-  return { dice: p.dice, throwCount: p.throwCount };
+  const current = getCurrentPlayer();
+  if (current.id !== id) return { error: 'Not your turn' };
+
+  if (current.throwCount >= 3) return { error: 'No rolls left' };
+
+  current.dice = rollDice(current.dice, current.held);
+  current.throwCount++;
+  return { dice: current.dice, throwCount: current.throwCount };
 }
 
 export function holdDiceForPlayer(id, idx, hold) {
-  const p = findPlayer(id);
-  if (!p) return { error: 'Player not found' };
-  p.held[idx] = hold;
-  return { held: p.held };
+  const current = getCurrentPlayer();
+  if (current.id !== id) return { error: 'Not your turn' };
+
+  current.held[idx] = hold;
+  return { held: current.held };
 }
 
 export function scoreForPlayer(id, section, idx) {
-  const p = findPlayer(id);
-  if (!p) return { error: 'Player not found' };
+  const p = getCurrentPlayer();
+  if (p.id !== id) return { error: 'Not your turn' };
+
+  if (section === 'upper' && p.scores.upper[idx] !== null) {
+    return { error: 'Field already scored' };
+  }
+  if (section === 'lower' && p.scores.lower[idx] !== null) {
+    return { error: 'Field already scored' };
+  }
+
   const vals = p.dice;
   let score = 0;
+
   if (section === 'upper') {
     score = sameValuePoints(idx + 1, vals);
     p.scores.upper[idx] = score;
@@ -92,17 +118,16 @@ export function scoreForPlayer(id, section, idx) {
     }
     p.scores.lower[idx] = score;
   }
-  // Reset turn
+
+  // Reset spillerens tur
   p.dice = [0, 0, 0, 0, 0];
   p.held = [false, false, false, false, false];
   p.throwCount = 0;
-  return { score, scores: p.scores };
-}
 
-function calculateTotal(player) {
-  const u = player.scores.upper.reduce((a, v) => a + (v || 0), 0);
-  const l = player.scores.lower.reduce((a, v) => a + (v || 0), 0);
-  return u + l;
+  // Skift tur
+  nextPlayer();
+
+  return { score, scores: p.scores };
 }
 
 export function getGameState(requestingId) {
@@ -123,7 +148,7 @@ export function getGameState(requestingId) {
     sum = me.scores.upper.reduce((a, v) => a + (v || 0), 0);
     bonus = sum >= 63 ? 50 : 0;
     total = calculateTotal(me);
-    dynamicScores = calculatePoints(dice); // Beregn dynamiske scores
+    dynamicScores = calculatePoints(dice);
   } else {
     dice = [0, 0, 0, 0, 0];
     held = [false, false, false, false, false];
@@ -132,11 +157,12 @@ export function getGameState(requestingId) {
     sum = 0;
     bonus = 0;
     total = 0;
-    dynamicScores = calculatePoints(dice); // Tomme terninger
+    dynamicScores = calculatePoints(dice);
   }
 
   return {
     youId: requestingId,
+    currentPlayerId: getCurrentPlayer()?.id, // 🔥 ny info til klienten
     started: state.started,
     players,
     dice,
@@ -146,6 +172,6 @@ export function getGameState(requestingId) {
     sum,
     bonus,
     total,
-    dynamicScores // Tilføj dynamiske scores
+    dynamicScores
   };
 }
