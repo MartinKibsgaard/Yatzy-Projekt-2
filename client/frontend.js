@@ -36,8 +36,24 @@ document.addEventListener("DOMContentLoaded", () => {
     updateDice(state.dice, state.held);
     held = [...state.held];
 
-    document.getElementById("turnDisplay").textContent = `Slag: ${state.throwCount}`;
-    rollButton.disabled = state.throwCount >= 3;
+    // Vis tur-info
+    document.getElementById("turnDisplay").textContent =
+      state.isMyTurn ? `🎲 Din tur – Slag: ${state.throwCount}` : `⌛ Modstanderens tur`;
+
+    // Håndtering af roll-knappen
+    if (!state.isMyTurn) {
+      rollButton.disabled = true;
+      rollButton.textContent = "⏳ Venter på modstander...";
+      rollButton.classList.remove("game-over");
+    } else if (state.throwCount >= 3) {
+      rollButton.disabled = true;
+      rollButton.textContent = "Ingen slag tilbage";
+      rollButton.classList.remove("game-over");
+    } else {
+      rollButton.disabled = false;
+      rollButton.textContent = "Roll";
+      rollButton.classList.remove("game-over");
+    }
 
     const dynamicScores = state.dynamicScores;
     const upper = state.scores.upper;
@@ -59,7 +75,7 @@ document.addEventListener("DOMContentLoaded", () => {
         input.classList.toggle("active-score", val === null && state.throwCount > 0);
         input.onclick = null;
 
-        if (val === null && state.throwCount > 0) {
+        if (val === null && state.throwCount > 0 && state.isMyTurn) {
           input.onclick = async () => {
             await scoreField(i < 6 ? "upper" : "lower", i < 6 ? i : i - 6);
             await refresh();
@@ -77,9 +93,9 @@ document.addEventListener("DOMContentLoaded", () => {
       rollButton.disabled = true;
       rollButton.textContent = "🎉 Spillet er slut!";
       rollButton.classList.add("game-over");
-
-      alert(`🎉 Spillet er færdigt! Din score blev: ${state.total} point`);
-      // window.location.href = "lobby.html"; // Fjernet: vi vil ikke redirecte i singleplayer
+      if (confirm(`🎉 Spillet er færdigt! Din score blev: ${state.total} point. Vil du vende tilbage til lobbyen?`)) {
+        window.location.href = "lobby.html";
+      }
     }
   }
 
@@ -104,11 +120,12 @@ document.addEventListener("DOMContentLoaded", () => {
     await refresh();
   });
 
+  // Klik på terninger for at holde dem – kun hvis det er din tur
   diceImgs.forEach((img, i) => {
     img.addEventListener("click", async () => {
       const state = await getGameState();
       const isFirstLoad = state.throwCount === 0 && state.dice.every(val => val === 0);
-      if (isFirstLoad) return;
+      if (isFirstLoad || !state.isMyTurn) return;
 
       const newHold = !held[i];
       await holdDice(i, newHold);
@@ -116,14 +133,15 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
-const backBtn = document.getElementById("backToLobbyBtn");
-if (backBtn) {
-  backBtn.addEventListener("click", () => {
-    window.location.href = "lobby.html";
-  });
-}
+  const backBtn = document.getElementById("backToLobbyBtn");
+  if (backBtn) {
+    backBtn.addEventListener("click", () => {
+      window.location.href = "lobby.html";
+    });
+  }
 
   refresh();
+  setInterval(refresh, 1000);        // Poll hvert sekund for at holde tur-status opdateret
   scoreboardUpdater();
   setInterval(scoreboardUpdater, 5000);
 });
