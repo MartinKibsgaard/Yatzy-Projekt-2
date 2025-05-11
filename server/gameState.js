@@ -14,8 +14,13 @@ import {
 } from './yatzy.mjs';
 
 const state = {
-  players: []
+  players: [],
+  currentPlayerIndex: 0,
 };
+
+function getCurrentPlayer() {
+  return state.players[state.currentPlayerIndex];
+}
 
 function findPlayer(id) {
   return state.players.find(p => p.id === id);
@@ -53,10 +58,16 @@ export function getPlayers() {
 export function rollDiceForPlayer(id) {
   const player = findPlayer(id);
   if (!player) return { error: 'Player not found' };
+
+  if (player.id !== getCurrentPlayer().id) {
+    return { error: 'Ikke din tur' };
+  }
+
   if (player.throwCount >= 3) return { error: 'No rolls left' };
 
   player.dice = rollDice(player.dice, player.held);
   player.throwCount++;
+
   return { dice: player.dice, throwCount: player.throwCount };
 }
 
@@ -103,12 +114,17 @@ export function scoreForPlayer(id, section, idx) {
   p.dice = [0, 0, 0, 0, 0];
   p.held = [false, false, false, false, false];
   p.throwCount = 0;
+  
+  // Skift tur
+  state.currentPlayerIndex = (state.currentPlayerIndex + 1) % state.players.length;
 
   return { score, scores: p.scores };
 }
 
 export function getGameState(id) {
   const p = findPlayer(id);
+  const isMyTurn = getCurrentPlayer()?.id === id;
+
   if (!p) {
     return {
       dice: [0, 0, 0, 0, 0],
@@ -118,8 +134,10 @@ export function getGameState(id) {
       sum: 0,
       bonus: 0,
       total: 0,
-      dynamicScores: calculatePoints([0, 0, 0, 0, 0])
+      dynamicScores: calculatePoints([0, 0, 0, 0, 0]),
+      isMyTurn 
     };
+    
   }
 
   const sum = p.scores.upper.reduce((a, v) => a + (v || 0), 0);
@@ -134,7 +152,8 @@ export function getGameState(id) {
     sum,
     bonus,
     total,
-    dynamicScores: calculatePoints(p.dice)
+    dynamicScores: calculatePoints(p.dice),
+    isMyTurn
   };
 }
 
