@@ -42,8 +42,9 @@ app.use(
   })
 );
 
-// Static files
-app.use(express.static(path.join(__dirname, "../client")));
+app.get("/", (req, res) => {
+  res.sendFile(path.join(__dirname, "../client/lobby.html"));
+});
 
 // API: join game
 app.post("/api/join", (req, res) => {
@@ -107,6 +108,9 @@ app.post("/api/restart", (req, res) => {
   const result = restartPlayerGame(id);
   res.json(result);
 });
+
+// Static files
+app.use(express.static(path.join(__dirname, '../client')));
 
 // Start server
 app.listen(PORT, () => console.log(`Server listening on port ${PORT}`));
