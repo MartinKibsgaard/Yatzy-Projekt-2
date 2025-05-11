@@ -72,6 +72,7 @@ export async function getGameState() {
   return response.json();
 }
 
+// Get all players
 export async function getGamePlayers() {
   const response = await fetch('http://localhost:8000/api/players', {
     credentials: 'include'
@@ -82,12 +83,14 @@ export async function getGamePlayers() {
   return response.json();
 }
 
+// Get player details
 export async function getPlayerDetails(playerId) {
   const response = await fetch(`http://localhost:8000/api/player/${playerId}`);
   if (!response.ok) throw new Error('Kunne ikke hente spillerdata');
   return response.json();
 }
 
+// Resets the game
 export async function restartGame() {
   const response = await fetch("/api/restart", {
     method: "POST",

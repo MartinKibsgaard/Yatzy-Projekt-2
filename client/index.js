@@ -75,10 +75,10 @@ document.addEventListener("DOMContentLoaded", () => {
     const filledCount = [...upper, ...lower].filter(v => v !== null).length;
     if (filledCount === 15) {
       rollButton.disabled = true;
-      rollButton.textContent = "🎉 Spillet er slut!";
+      rollButton.textContent = "🎉 Spillet er slut! 🎉";
       rollButton.classList.add("game-over");
 
-      alert(`🎉 Spillet er færdigt! Din score blev: ${state.total} point`);
+      alert(`🎉 Spillet er færdigt! Din score blev: ${state.total} point 🎉`);
       // window.location.href = "lobby.html"; // Fjernet: vi vil ikke redirecte i singleplayer
     }
   }
@@ -95,7 +95,6 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 
-  // Roll-knap med ternings-animation
   rollButton.addEventListener("click", async () => {
     diceImgs.forEach(img => img.classList.add("dice-rolling"));
     setTimeout(() => diceImgs.forEach(img => img.classList.remove("dice-rolling")), 600);
